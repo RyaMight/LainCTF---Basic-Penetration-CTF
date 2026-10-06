@@ -12,7 +12,16 @@ services:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - lain-db-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass_lain"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-prootpass_lain",
+        ]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -25,7 +34,7 @@ services:
     container_name: lain-ctf-web
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8001:80"
     environment:
       DB_HOST: db
       DB_NAME: lain

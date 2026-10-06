@@ -1,9 +1,3 @@
--- ============================================================
--- Lain CTF - SQL Injection practice lab (db/init.sql)
--- Dijalankan otomatis oleh entrypoint MySQL saat volume baru
--- ============================================================
-
--- ---------- Database 1: lain (isi publik, titik injeksi) ----------
 CREATE DATABASE IF NOT EXISTS lain CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE lain;
 
@@ -28,7 +22,6 @@ INSERT INTO episodes (title, description) VALUES
 ('LANDSCAPE', 'Dunia di sekitar Lain perlahan membubarkan diri menjadi data. Keluarganya ternyata tidak pernah benar-benar ada, rumahnya menjadi kosong, dan kota yang ia tempati hanyalah lapisan informasi. Lain kini benar-benar berdiri di antara dua dunia yang tidak lagi memiliki batas.'),
 ('EGO', 'Di dalam Wired, Lain berhadapan dengan Masami Eiri yang mengaku sebagai dewa. Lain menyadari bahwa ia sendirilah yang sesungguhnya omnipresent, lalu menghapus Eiri. Pada akhirnya Lain memilih menjadi semua dan tidak menjadi siapa-siapa, mengamati dunia dari mana-mana, termasuk dari sisi Alice yang ia cintai.');
 
--- ---------- Database 2: admin (target dump sqlmap) ----------
 CREATE DATABASE IF NOT EXISTS admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE admin;
 
@@ -39,15 +32,9 @@ CREATE TABLE IF NOT EXISTS admins (
   role VARCHAR(20) NOT NULL DEFAULT 'admin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Password: "cyberia" (MD5) -> sengaja simple agar mudah dicrack peserta
 INSERT INTO admins (username, password_hash, role) VALUES
 ('Lain', MD5('cyberia'), 'admin');
 
--- Catatan: flag TIDAK disimpan di database.
--- Dump sqlmap hanya memberikan hash MD5 -> peserta harus crack lalu login.
--- Flag 3 hanya tampil di dashboard setelah login berhasil.
-
--- Beri hak user aplikasi (lain) ke kedua database
 GRANT ALL PRIVILEGES ON lain.* TO 'lain'@'%';
 GRANT ALL PRIVILEGES ON admin.* TO 'lain'@'%';
 FLUSH PRIVILEGES;

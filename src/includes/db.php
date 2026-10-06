@@ -1,7 +1,4 @@
 <?php
-// includes/db.php
-// Koneksi MySQL untuk aplikasi (user non-root "lain")
-
 require_once __DIR__ . '/config.php';
 
 $DB_HOST = getenv('DB_HOST') ?: 'db';

@@ -4,7 +4,6 @@ require_once __DIR__ . '/includes/config.php';
 
 $id = $_GET['id'] ?? '1';
 
-// VULNERABLE: input langsung disuntikkan ke query (untuk latihan SQLi)
 $sql = "SELECT id, title, description FROM episodes WHERE id = " . $id;
 ?>
 <!DOCTYPE html>

@@ -2,11 +2,6 @@
 session_start();
 require_once __DIR__ . '/../includes/config.php';
 
-// Halaman login ini sengaja TIDAK rentan SQLi.
-// Jalur solve: sqlmap dump -> crack MD5 -> login.
-
-// FLAG 2 dikirim via HTTP response header — tidak tampil di view-source,
-// hanya terlihat lewat DevTools (Network tab) atau curl -i
 header('X-Hidden-Flag: ' . FLAG_ADMIN_PAGE);
 
 $error = '';

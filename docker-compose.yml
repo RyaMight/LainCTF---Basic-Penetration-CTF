@@ -27,7 +27,6 @@ services:
       retries: 20
     networks:
       - lain-net
-    # Port DB sengaja TIDAK dipublish ke host — sqlmap harus lewat web
 
   web:
     build: .
@@ -40,7 +39,6 @@ services:
       DB_NAME: lain
       DB_USER: lain
       DB_PASS: lainpass
-      # Edit nilai flag di sini (format: LainCTF{...})
       FLAG_ERROR: "LainCTF{y0u_4r3_c0nn3ct3d}"
       FLAG_ADMIN_PAGE: "LainCTF{l4y3r_07_pr0t0c0l}"
       FLAG_DUMP: "LainCTF{pr0t0c0l_7_h4s_b33n_3st4bl1sh3d}"

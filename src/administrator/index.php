@@ -5,6 +5,10 @@ require_once __DIR__ . '/../includes/config.php';
 // Halaman login ini sengaja TIDAK rentan SQLi.
 // Jalur solve: sqlmap dump -> crack MD5 -> login.
 
+// FLAG 2 dikirim via HTTP response header — tidak tampil di view-source,
+// hanya terlihat lewat DevTools (Network tab) atau curl -i
+header('X-Hidden-Flag: ' . FLAG_ADMIN_PAGE);
+
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $u = $_POST['username'] ?? '';
@@ -29,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="login-wrap">
     <div class="login-box">
-        <!-- FLAG 2: <?= FLAG_ADMIN_PAGE ?> -->
         <h1>Admin Login</h1>
         <?php if ($error): ?><p style="color:#dc3545"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST" action="index.php">

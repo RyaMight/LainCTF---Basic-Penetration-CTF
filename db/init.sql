@@ -43,13 +43,9 @@ CREATE TABLE IF NOT EXISTS admins (
 INSERT INTO admins (username, password_hash, role) VALUES
 ('Lain', MD5('cyberia'), 'admin');
 
-CREATE TABLE IF NOT EXISTS secrets (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  flag VARCHAR(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO secrets (flag) VALUES
-('LainCTF{PLACEHOLDER_SEEDER_AKAN_MENGGANTI_INI}');
+-- Catatan: flag TIDAK disimpan di database.
+-- Dump sqlmap hanya memberikan hash MD5 -> peserta harus crack lalu login.
+-- Flag 3 hanya tampil di dashboard setelah login berhasil.
 
 -- Beri hak user aplikasi (lain) ke kedua database
 GRANT ALL PRIVILEGES ON lain.* TO 'lain'@'%';

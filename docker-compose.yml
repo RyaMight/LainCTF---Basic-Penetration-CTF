@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: lain-ctf-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass_lain
+      MYSQL_DATABASE: lain
+      MYSQL_USER: lain
+      MYSQL_PASSWORD: lainpass
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - lain-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass_lain"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - lain-net
+    # Port DB sengaja TIDAK dipublish ke host — sqlmap harus lewat web
+
+  web:
+    build: .
+    container_name: lain-ctf-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: lain
+      DB_USER: lain
+      DB_PASS: lainpass
+      # Edit nilai flag di sini (format: LainCTF{...})
+      FLAG_ERROR: "LainCTF{y0u_4r3_c0nn3ct3d}"
+      FLAG_ADMIN_PAGE: "LainCTF{l4y3r_07_pr0t0c0l}"
+      FLAG_DUMP: "LainCTF{pr0t0c0l_7_h4s_b33n_3st4bl1sh3d}"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lain-net
+
+volumes:
+  lain-db-data:
+
+networks:
+  lain-net:
+    driver: bridge

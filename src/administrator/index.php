@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="login-wrap">
     <div class="login-box">
         <h1>Admin Login</h1>
+        <div class="flag">[FLAG] <?= htmlspecialchars(FLAG_ADMIN_PAGE) ?></div>
         <?php if ($error): ?><p style="color:#dc3545"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST" action="index.php">
             <div class="form-group">

@@ -19,7 +19,7 @@ if (!isset($_SESSION['admin'])) {
 <div class="container">
     <h1>Welcome, <?= htmlspecialchars($_SESSION['admin']) ?></h1>
     <p>You have admin access.</p>
-    <div class="flag">[FLAG] <?= FLAG_DUMP ?></div>
+    <div class="flag">[FLAG] <?= htmlspecialchars(FLAG_DUMP) ?></div>
     <p class="back"><a href="../home.php">&laquo; Back to list</a> | <a href="logout.php">Logout</a></p>
 </div>
 <div class="footer">© 2026 Lain CTF - Basic Penetration CTF</div>

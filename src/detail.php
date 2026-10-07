@@ -6,7 +6,9 @@ require_once __DIR__ . '/includes/ratelimit.php';
 $id = $_GET['id'] ?? '1';
 
 // --- WAF: layer 7 filter ---
-$blocked = [' ', '/**/', '/*', '*/', 'union', 'select', 'and', 'or', 'sleep', 'benchmark', 'extractvalue', 'updatexml', 'information_schema', 'outfile', 'loadfile'];
+// Blokir spasi/komentar/union/time-based. AND/OR/SELECT sengaja lolos
+// agar blind SQLi tetap mungkin (Medium), tapi harus pakai whitespace bypass.
+$blocked = [' ', '/**/', '/*', '*/', 'union', 'sleep', 'benchmark', 'extractvalue', 'updatexml', 'outfile', 'loadfile'];
 $lower = strtolower($id);
 foreach ($blocked as $word) {
     if (strpos($lower, $word) !== false) {
@@ -14,7 +16,8 @@ foreach ($blocked as $word) {
         exit('403 Forbidden');
     }
 }
-if (!preg_match('/^[0-9\x28\x29+\-*<>=!&|,%\'".`a-z_]+$/i', $id)) {
+// \x09-\x0d = tab/newline/vertical tab/form feed (whitespace alternatif MySQL)
+if (!preg_match('/^[0-9\x09\x0a\x0b\x0c\x0d\x28\x29+\-*<>=!&|,%\'".`a-z_]+$/i', $id)) {
     http_response_code(403);
     exit('403 Forbidden');
 }

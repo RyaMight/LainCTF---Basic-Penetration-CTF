@@ -37,7 +37,11 @@ function rate_limit_check(string $bucket, string $identifier, int $max, int $win
 
 function client_identifier(): string
 {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    // Di balik Cloudflare Tunnel, REMOTE_ADDR = IP cloudflared (sama untuk semua).
+    // CF-Connecting-IP di-set oleh Cloudflare dan tidak bisa dilewati oleh client
+    // karena semua request terpaksa lewat tunnel.
+    $ip = $_SERVER['HTTP_CF_CONNECTING_IP']
+        ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
     return $ip . '|' . $ua;
 }

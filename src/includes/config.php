@@ -1,8 +1,8 @@
 <?php
 define('SITE_NAME', 'LAIN // WIRED ARCHIVE');
 
-define('ADMIN_RATELIMIT_MAX', 5);
+define('ADMIN_RATELIMIT_MAX', 15);
 define('ADMIN_RATELIMIT_WINDOW', 300);
 
-define('SQLI_RATELIMIT_MAX', 60);
+define('SQLI_RATELIMIT_MAX', 300);
 define('SQLI_RATELIMIT_WINDOW', 60);

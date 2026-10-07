@@ -1,3 +1,4 @@
+-- Database "lain": episodes + secrets + tabel decoy
 CREATE DATABASE IF NOT EXISTS lain CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE lain;
 
@@ -22,18 +23,49 @@ INSERT INTO episodes (title, description) VALUES
 ('LANDSCAPE', 'Dunia di sekitar Lain perlahan membubarkan diri menjadi data. Keluarganya ternyata tidak pernah benar-benar ada, rumahnya menjadi kosong, dan kota yang ia tempati hanyalah lapisan informasi. Lain kini benar-benar berdiri di antara dua dunia yang tidak lagi memiliki batas.'),
 ('EGO', 'Di dalam Wired, Lain berhadapan dengan Masami Eiri yang mengaku sebagai dewa. Lain menyadari bahwa ia sendirilah yang sesungguhnya omnipresent, lalu menghapus Eiri. Pada akhirnya Lain memilih menjadi semua dan tidak menjadi siapa-siapa, mengamati dunia dari mana-mana, termasuk dari sisi Alice yang ia cintai.');
 
+-- Flag disimpan di sini (di-seed ulang oleh seed.php setiap container start)
+CREATE TABLE IF NOT EXISTS secrets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  bucket VARCHAR(50) NOT NULL,
+  content TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabel umpan (decoy) supaya enumeration lebih menipu
+CREATE TABLE IF NOT EXISTS knights_messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  alias VARCHAR(64) NOT NULL,
+  message TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO knights_messages (alias, message) VALUES
+('MenInBlack', 'We have been watching you, Lain.'),
+('cyberia_lore', 'The Wired remembers everything.'),
+('phantom', 'Present day. Present time. Ha ha ha...');
+
+-- Database "admin": TIDAK ada kredensial asli, hanya tabel jebakan
 CREATE DATABASE IF NOT EXISTS admin CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE admin;
 
 CREATE TABLE IF NOT EXISTS admins (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) NOT NULL,
-  password_hash CHAR(32) NOT NULL,
+  password_hash CHAR(255) NOT NULL,
   role VARCHAR(20) NOT NULL DEFAULT 'admin'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO admins (username, password_hash, role) VALUES
-('Lain', MD5('cyberia'), 'admin');
+('Lain', '$2y$10$Q8Z0m5YcH0jChS09dPScR.lXWLaSxhWigvDFcgX2mn1/h9DcRm/yC', 'admin'),
+('eiri', '$2y$10$deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbe', 'superadmin');
+
+USE lain;
+
+-- Kredensial admin asli ada di sini (bcrypt username:password), di-seed oleh seed.php
+CREATE TABLE IF NOT EXISTS admin_users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(30) NOT NULL DEFAULT 'admin'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 GRANT ALL PRIVILEGES ON lain.* TO 'lain'@'%';
 GRANT ALL PRIVILEGES ON admin.* TO 'lain'@'%';

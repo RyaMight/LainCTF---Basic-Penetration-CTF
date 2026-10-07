@@ -39,9 +39,11 @@ services:
       DB_NAME: lain
       DB_USER: lain
       DB_PASS: lainpass
-      FLAG_ERROR: "LainCTF{y0u_4r3_c0nn3ct3d}"
-      FLAG_ADMIN_PAGE: "LainCTF{l4y3r_07_pr0t0c0l}"
-      FLAG_DUMP: "LainCTF{pr0t0c0l_7_h4s_b33n_3st4bl1sh3d}"
+      FLAG_SQLI: "LainCTF{bl1nd_but_n0t_br0k3n}"
+      FLAG_ADMIN: "LainCTF{w3lc0m3_t0_th3_w1r3d}"
+      FLAG_DECOY: "LainCTF{d3c0y_tr4p_th1s_1s_n0t_th3_fl4g}"
+      ADMIN_USERNAME: "lain_chrono"
+      ADMIN_PASSWORD: "Tr1gger_Sh1nji_1998"
     depends_on:
       db:
         condition: service_healthy

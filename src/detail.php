@@ -1,10 +1,34 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/ratelimit.php';
 
 $id = $_GET['id'] ?? '1';
 
+// --- WAF: layer 7 filter ---
+$blocked = [' ', '/**/', '/*', '*/', 'union', 'select', 'and', 'or', 'sleep', 'benchmark', 'extractvalue', 'updatexml', 'information_schema', 'outfile', 'loadfile'];
+$lower = strtolower($id);
+foreach ($blocked as $word) {
+    if (strpos($lower, $word) !== false) {
+        http_response_code(403);
+        exit('403 Forbidden');
+    }
+}
+if (!preg_match('/^[0-9\x28\x29+\-*<>=!&|,%\'".`a-z_]+$/i', $id)) {
+    http_response_code(403);
+    exit('403 Forbidden');
+}
+
+// --- Rate limit (sliding window) ---
+if (!rate_limit_check('sqli', client_identifier(), SQLI_RATELIMIT_MAX, SQLI_RATELIMIT_WINDOW)) {
+    http_response_code(429);
+    exit('429 Too Many Requests');
+}
+
 $sql = "SELECT id, title, description FROM episodes WHERE id = " . $id;
+
+// Error TIDAK ditampilkan (blind) - pesan generik saja
+$errorPage = '<h1>Not Found</h1><p>Episode tidak ditemukan.</p><a class="btn" href="home.php">Back to Home</a>';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -18,7 +42,7 @@ $sql = "SELECT id, title, description FROM episodes WHERE id = " . $id;
 <?php
 try {
     $result = $conn->query($sql);
-    if ($row = $result->fetch_assoc()) {
+    if ($result && $row = $result->fetch_assoc()) {
         $imgId = (int)$row['id'];
         $imgExt = '';
         foreach (['jpg', 'jpeg', 'png', 'webp'] as $e) {
@@ -44,15 +68,10 @@ try {
         <a class="btn" href="home.php">Back to Home</a>
         <?php
     } else {
-        echo '<h1>Not Found</h1><p>Episode tidak ditemukan.</p><a class="btn" href="home.php">Back to Home</a>';
+        echo $errorPage;
     }
 } catch (mysqli_sql_exception $e) {
-    ?>
-    <h1>SQL Error</h1>
-    <div class="error-box"><?= htmlspecialchars($e->getMessage()) ?></div>
-    <div class="flag">[FLAG] <?= FLAG_ERROR ?></div>
-    <p style="margin-top:20px"><a class="btn" href="home.php">Back to Home</a></p>
-    <?php
+    echo $errorPage;
 }
 ?>
 </div>
